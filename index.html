@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RF Chain Calculator | 射频链路预算计算器</title>
+    <meta name="description" content="Professional RF Link Budget Calculator - FSPL, EIRP, Radar Range, Phased Array, Unit Conversion">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📡</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">📡</span>
+                <div>
+                    <h1>RF Chain Calculator</h1>
+                    <p class="subtitle">Professional RF Link Budget & Radar Tools</p>
+                </div>
+            </div>
+            <nav class="nav-tabs" id="navTabs">
+                <button class="nav-tab active" data-tab="link-budget">Link Budget</button>
+                <button class="nav-tab" data-tab="radar">Radar Range</button>
+                <button class="nav-tab" data-tab="phased-array">Phased Array</button>
+                <button class="nav-tab" data-tab="unit-conv">Unit Convert</button>
+                <button class="nav-tab" data-tab="pulse-cap">Pulse & Cap</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- ==================== LINK BUDGET TAB ==================== -->
+        <section class="tab-panel active" id="tab-link-budget">
+            <div class="panel-grid">
+                <!-- Transmitter Section -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🔴</span>
+                        <h2>Transmitter</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>TX Power (dBm)</label>
+                        <input type="number" id="lb-tx-power" value="30" step="any" oninput="calcLinkBudget()">
+                        <span class="hint">= <span id="lb-tx-power-w">1.000</span> W</span>
+                    </div>
+                    <div class="form-group">
+                        <label>TX Cable Loss (dB)</label>
+                        <input type="number" id="lb-tx-cable" value="1" step="any" oninput="calcLinkBudget()">
+                    </div>
+                    <div class="form-group">
+                        <label>TX Antenna Gain (dBi)</label>
+                        <input type="number" id="lb-tx-gain" value="10" step="any" oninput="calcLinkBudget()">
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">EIRP</span>
+                        <span class="result-value" id="lb-eirp">39.00 dBm</span>
+                        <span class="result-sub">= <span id="lb-eirp-w">7.943</span> W</span>
+                    </div>
+                </div>
+
+                <!-- Channel Section -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🟠</span>
+                        <h2>Channel</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>Frequency (MHz)</label>
+                        <input type="number" id="lb-freq" value="2400" step="any" oninput="calcLinkBudget()">
+                        <span class="hint">λ = <span id="lb-wavelength">125.0</span> mm</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Distance (km)</label>
+                        <input type="number" id="lb-distance" value="10" step="any" oninput="calcLinkBudget()">
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Free Space Path Loss (FSPL)</span>
+                        <span class="result-value" id="lb-fspl">120.05 dB</span>
+                    </div>
+                    <div class="form-group" style="margin-top:1rem">
+                        <label>Additional Losses (dB)</label>
+                        <input type="number" id="lb-add-loss" value="0" step="any" oninput="calcLinkBudget()">
+                        <span class="hint">Rain, fading, building penetration, etc.</span>
+                    </div>
+                </div>
+
+                <!-- Receiver Section -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🟢</span>
+                        <h2>Receiver</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>RX Antenna Gain (dBi)</label>
+                        <input type="number" id="lb-rx-gain" value="10" step="any" oninput="calcLinkBudget()">
+                    </div>
+                    <div class="form-group">
+                        <label>RX Cable Loss (dB)</label>
+                        <input type="number" id="lb-rx-cable" value="1" step="any" oninput="calcLinkBudget()">
+                    </div>
+                    <div class="form-group">
+                        <label>Receiver Sensitivity (dBm)</label>
+                        <input type="number" id="lb-sensitivity" value="-90" step="any" oninput="calcLinkBudget()">
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Received Power</span>
+                        <span class="result-value" id="lb-rx-power">-63.05 dBm</span>
+                    </div>
+                    <div class="result-box highlight" id="lb-margin-box">
+                        <span class="result-label">Link Margin</span>
+                        <span class="result-value" id="lb-margin">26.95 dB</span>
+                        <span class="result-sub" id="lb-status">✅ Link OK</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formula Reference -->
+            <details class="formula-ref">
+                <summary>📐 Formulas & Reference</summary>
+                <div class="formula-content">
+                    <div class="formula-item">
+                        <strong>EIRP = P<sub>TX</sub> - L<sub>cable,TX</sub> + G<sub>TX</sub></strong>
+                    </div>
+                    <div class="formula-item">
+                        <strong>FSPL (dB) = 20·log₁₀(d) + 20·log₁₀(f) + 32.44</strong>
+                        <br><span class="note">d in km, f in MHz</span>
+                    </div>
+                    <div class="formula-item">
+                        <strong>P<sub>RX</sub> = EIRP - FSPL - L<sub>add</sub> + G<sub>RX</sub> - L<sub>cable,RX</sub></strong>
+                    </div>
+                    <div class="formula-item">
+                        <strong>Link Margin = P<sub>RX</sub> - Sensitivity</strong>
+                    </div>
+                </div>
+            </details>
+        </section>
+
+        <!-- ==================== RADAR TAB ==================== -->
+        <section class="tab-panel" id="tab-radar">
+            <div class="panel-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">📡</span>
+                        <h2>Radar Parameters</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>Peak TX Power (dBm)</label>
+                        <input type="number" id="rad-peak-power" value="60" step="any" oninput="calcRadar()">
+                        <span class="hint">= <span id="rad-peak-power-w">1.000</span> kW</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Frequency (GHz)</label>
+                        <input type="number" id="rad-freq" value="10" step="any" oninput="calcRadar()">
+                    </div>
+                    <div class="form-group">
+                        <label>TX Antenna Gain (dBi)</label>
+                        <input type="number" id="rad-tx-gain" value="30" step="any" oninput="calcRadar()">
+                    </div>
+                    <div class="form-group">
+                        <label>RX Antenna Gain (dBi)</label>
+                        <input type="number" id="rad-rx-gain" value="30" step="any" oninput="calcRadar()">
+                    </div>
+                    <div class="form-group">
+                        <label>Target RCS (m²)</label>
+                        <input type="number" id="rad-rcs" value="1" step="any" oninput="calcRadar()">
+                    </div>
+                    <div class="form-group">
+                        <label>Min Detectable Power (dBm)</label>
+                        <input type="number" id="rad-min-power" value="-100" step="any" oninput="calcRadar()">
+                    </div>
+                    <div class="form-group">
+                        <label>System Losses (dB)</label>
+                        <input type="number" id="rad-loss" value="5" step="any" oninput="calcRadar()">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🎯</span>
+                        <h2>Radar Results</h2>
+                    </div>
+                    <div class="result-box highlight">
+                        <span class="result-label">Maximum Range (Monostatic)</span>
+                        <span class="result-value" id="rad-max-range">— km</span>
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">EIRP</span>
+                        <span class="result-value" id="rad-eirp">— dBm</span>
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">One-Way FSPL at Max Range</span>
+                        <span class="result-value" id="rad-fspl">— dB</span>
+                    </div>
+
+                    <details class="formula-ref" style="margin-top:1.5rem">
+                        <summary>📐 Radar Range Equation</summary>
+                        <div class="formula-content">
+                            <div class="formula-item">
+                                <strong>R<sub>max</sub> = [ (P<sub>t</sub>·G²·λ²·σ) / ((4π)³·S<sub>min</sub>·L) ]<sup>1/4</sup></strong>
+                            </div>
+                            <div class="formula-item">
+                                <span class="note">Monostatic: G<sub>TX</sub> = G<sub>RX</sub> = G</span>
+                            </div>
+                            <div class="formula-item">
+                                <strong>Bistatic variant uses G<sub>TX</sub>·G<sub>RX</sub> instead of G²</strong>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PHASED ARRAY TAB ==================== -->
+        <section class="tab-panel" id="tab-phased-array">
+            <div class="panel-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🔷</span>
+                        <h2>Array Configuration</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>Number of Elements (N)</label>
+                        <input type="number" id="pa-elements" value="64" min="1" step="1" oninput="calcPhasedArray()">
+                    </div>
+                    <div class="form-group">
+                        <label>Element Gain (dBi)</label>
+                        <input type="number" id="pa-el-gain" value="5" step="any" oninput="calcPhasedArray()">
+                    </div>
+                    <div class="form-group">
+                        <label>Element Spacing (λ)</label>
+                        <input type="number" id="pa-spacing" value="0.5" step="any" oninput="calcPhasedArray()">
+                        <span class="hint">Typically 0.5λ for no grating lobes</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Aperture Efficiency</label>
+                        <input type="number" id="pa-efficiency" value="0.6" step="any" min="0" max="1" oninput="calcPhasedArray()">
+                    </div>
+                    <div class="form-group">
+                        <label>Frequency (GHz)</label>
+                        <input type="number" id="pa-freq" value="10" step="any" oninput="calcPhasedArray()">
+                    </div>
+                    <div class="form-group">
+                        <label>System Noise Temp (K)</label>
+                        <input type="number" id="pa-noise-temp" value="300" step="any" oninput="calcPhasedArray()">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">📊</span>
+                        <h2>Array Results</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>Power per Element (dBm)</label>
+                        <input type="number" id="pa-power-el" value="20" step="any" oninput="calcPhasedArray()">
+                    </div>
+                    <div class="result-box highlight">
+                        <span class="result-label">Array Gain</span>
+                        <span class="result-value" id="pa-array-gain">— dBi</span>
+                    </div>
+                    <div class="result-box highlight">
+                        <span class="result-label">EIRP (Total)</span>
+                        <span class="result-value" id="pa-eirp">— dBm</span>
+                        <span class="result-sub">= <span id="pa-eirp-w">—</span> W</span>
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">G/T (Figure of Merit)</span>
+                        <span class="result-value" id="pa-gt">— dB/K</span>
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">3-dB Beamwidth</span>
+                        <span class="result-value" id="pa-beamwidth">— °</span>
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Array Area</span>
+                        <span class="result-value" id="pa-area">— m²</span>
+                    </div>
+
+                    <details class="formula-ref" style="margin-top:1.5rem">
+                        <summary>📐 Formulas</summary>
+                        <div class="formula-content">
+                            <div class="formula-item">
+                                <strong>Array Gain ≈ η · 4π·A/λ² = 10·log₁₀(η·N·G<sub>el</sub>) [if η accounts for element]</strong>
+                            </div>
+                            <div class="formula-item">
+                                <strong>G/T = G<sub>array</sub> (dB) - 10·log₁₀(T<sub>sys</sub>)</strong>
+                            </div>
+                            <div class="formula-item">
+                                <strong>EIRP = P<sub>total</sub> + G<sub>array</sub></strong>
+                            </div>
+                            <div class="formula-item">
+                                <strong>θ₃dB ≈ 0.886·λ / (N·d) [for uniform linear array]</strong>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== UNIT CONVERSION TAB ==================== -->
+        <section class="tab-panel" id="tab-unit-conv">
+            <div class="panel-grid">
+                <!-- dBm ↔ mW -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🔄</span>
+                        <h2>dBm ↔ mW</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>Power (dBm)</label>
+                        <input type="number" id="uc-dbm" value="30" step="any" oninput="ucDbmToMw()">
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Power (mW)</span>
+                        <span class="result-value" id="uc-mw">1000.000 mW</span>
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Power (W)</span>
+                        <span class="result-value" id="uc-w">1.000 W</span>
+                    </div>
+                    <hr class="divider">
+                    <div class="form-group">
+                        <label>Power (mW)</label>
+                        <input type="number" id="uc-mw-input" value="1000" step="any" oninput="ucMwToDbm()">
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Power (dBm)</span>
+                        <span class="result-value" id="uc-mw-result">30.00 dBm</span>
+                    </div>
+                </div>
+
+                <!-- dBi ↔ dBd -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🔄</span>
+                        <h2>dBi ↔ dBd</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>Gain (dBi)</label>
+                        <input type="number" id="uc-dbi" value="10" step="any" oninput="ucDbiToDbd()">
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Gain (dBd)</span>
+                        <span class="result-value" id="uc-dbd-result">7.85 dBd</span>
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Linear Gain</span>
+                        <span class="result-value" id="uc-linear">10.00</span>
+                    </div>
+                    <hr class="divider">
+                    <div class="form-group">
+                        <label>Gain (dBd)</label>
+                        <input type="number" id="uc-dbd-input" value="7.85" step="any" oninput="ucDbdToDbi()">
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Gain (dBi)</span>
+                        <span class="result-value" id="uc-dbi-result">10.00 dBi</span>
+                    </div>
+                </div>
+
+                <!-- Frequency ↔ Wavelength -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🔄</span>
+                        <h2>Frequency ↔ Wavelength</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>Frequency (MHz)</label>
+                        <input type="number" id="uc-freq" value="2400" step="any" oninput="ucFreqToWavelength()">
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Wavelength</span>
+                        <span class="result-value" id="uc-wavelength-mm">125.00 mm</span>
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">λ/4 (Quarter Wave)</span>
+                        <span class="result-value" id="uc-quarter-wave">31.25 mm</span>
+                    </div>
+                    <hr class="divider">
+                    <div class="form-group">
+                        <label>Wavelength (mm)</label>
+                        <input type="number" id="uc-wavelength-input" value="125" step="any" oninput="ucWavelengthToFreq()">
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Frequency</span>
+                        <span class="result-value" id="uc-freq-result">2398.45 MHz</span>
+                    </div>
+                </div>
+
+                <!-- VSWR ↔ Return Loss ↔ Mismatch -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🔄</span>
+                        <h2>VSWR ↔ Return Loss</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>VSWR</label>
+                        <input type="number" id="uc-vswr" value="2" step="any" min="1" oninput="ucVswrToRl()">
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Return Loss (dB)</span>
+                        <span class="result-value" id="uc-rl">9.54 dB</span>
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Reflection Coeff |Γ|</span>
+                        <span class="result-value" id="uc-gamma">0.333</span>
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Mismatch Loss (dB)</span>
+                        <span class="result-value" id="uc-mismatch">0.51 dB</span>
+                    </div>
+                    <hr class="divider">
+                    <div class="form-group">
+                        <label>Return Loss (dB)</label>
+                        <input type="number" id="uc-rl-input" value="9.54" step="any" min="0" oninput="ucRlToVswr()">
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">VSWR</span>
+                        <span class="result-value" id="uc-vswr-result">2.00</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PULSE & CAPACITOR TAB ==================== -->
+        <section class="tab-panel" id="tab-pulse-cap">
+            <div class="panel-grid">
+                <!-- Pulse Parameters -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">⚡</span>
+                        <h2>Pulse Energy Calculator</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>Peak Power (kW)</label>
+                        <input type="number" id="pc-peak-power" value="10" step="any" oninput="calcPulse()">
+                    </div>
+                    <div class="form-group">
+                        <label>Pulse Width (μs)</label>
+                        <input type="number" id="pc-pulse-width" value="1" step="any" oninput="calcPulse()">
+                    </div>
+                    <div class="form-group">
+                        <label>PRF / PRF (Hz)</label>
+                        <input type="number" id="pc-prf" value="1000" step="any" oninput="calcPulse()">
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Pulse Energy</span>
+                        <span class="result-value" id="pc-energy">10.00 mJ</span>
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Average Power</span>
+                        <span class="result-value" id="pc-avg-power">10.00 W</span>
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Duty Cycle</span>
+                        <span class="result-value" id="pc-duty">0.10 %</span>
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Pulse Repetition Interval</span>
+                        <span class="result-value" id="pc-pri">1000.00 μs</span>
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Max Unambiguous Range</span>
+                        <span class="result-value" id="pc-max-range">150.00 km</span>
+                    </div>
+                </div>
+
+                <!-- Capacitor Calculator -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🔋</span>
+                        <h2>Capacitor Energy Calculator</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>Capacitance (μF)</label>
+                        <input type="number" id="pc-cap" value="100" step="any" oninput="calcCapacitor()">
+                    </div>
+                    <div class="form-group">
+                        <label>Voltage (V)</label>
+                        <input type="number" id="pc-voltage" value="1000" step="any" oninput="calcCapacitor()">
+                    </div>
+                    <div class="result-box highlight">
+                        <span class="result-label">Stored Energy</span>
+                        <span class="result-value" id="pc-cap-energy">50.00 J</span>
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Charge (C)</span>
+                        <span class="result-value" id="pc-cap-charge">0.100 C</span>
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Discharge Time to 37% (τ=RC)</span>
+                        <span class="result-sub">Enter R to calculate:</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Load Resistance (Ω)</label>
+                        <input type="number" id="pc-resistance" value="50" step="any" oninput="calcCapacitor()">
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Time Constant τ</span>
+                        <span class="result-value" id="pc-tau">5.000 μs</span>
+                    </div>
+                    <div class="result-box">
+                        <span class="result-label">Peak Discharge Current</span>
+                        <span class="result-value" id="pc-peak-current">20.00 kA</span>
+                    </div>
+
+                    <details class="formula-ref" style="margin-top:1.5rem">
+                        <summary>📐 Formulas</summary>
+                        <div class="formula-content">
+                            <div class="formula-item">
+                                <strong>E = ½·C·V²</strong>
+                            </div>
+                            <div class="formula-item">
+                                <strong>Q = C·V</strong>
+                            </div>
+                            <div class="formula-item">
+                                <strong>τ = R·C</strong>
+                            </div>
+                            <div class="formula-item">
+                                <strong>I<sub>peak</sub> = V / R</strong>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>RF Chain Calculator | Professional RF Engineering Tools | Deployed on Cloudflare Pages</p>
+        <p class="footer-sub">⚠️ Results are for estimation purposes. Always verify with measurement data.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
