@@ -1,5 +1,6 @@
 /* ========================================
    RF Chain Calculator — Dark Professional Theme
+   Optimized for compact layout
    ======================================== */
 
 /* ---------- Reset & Base ---------- */
@@ -15,6 +16,7 @@
     --bg-card: #1e2233;
     --bg-input: #141622;
     --bg-result: #12141f;
+    --bg-table: #161926;
     --border: #2a2e3f;
     --border-focus: #4a7dff;
     --text-primary: #e4e7f1;
@@ -27,21 +29,21 @@
     --accent-purple: #a78bfa;
     --accent-cyan: #06b6d4;
     --shadow: 0 4px 24px rgba(0,0,0,0.3);
-    --radius: 12px;
-    --radius-sm: 8px;
+    --radius: 10px;
+    --radius-sm: 6px;
     --transition: 0.2s ease;
 }
 
 html {
-    font-size: 15px;
+    font-size: 16px;
     scroll-behavior: smooth;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
     background: var(--bg-primary);
     color: var(--text-primary);
-    line-height: 1.6;
+    line-height: 1.5;
     min-height: 100vh;
 }
 
@@ -58,37 +60,77 @@ body {
 .header-content {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 1rem 1.5rem;
+    padding: 0.5rem 1.25rem;
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
 }
 
 .logo {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
+    flex-shrink: 0;
 }
 
 .logo-icon {
-    font-size: 2rem;
+    font-size: 1.6rem;
     filter: drop-shadow(0 0 8px rgba(74,125,255,0.4));
 }
 
 .logo h1 {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: 700;
     background: linear-gradient(135deg, #4a7dff, #06b6d4);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    letter-spacing: -0.02em;
+    letter-spacing: 0.02em;
 }
 
 .logo .subtitle {
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     color: var(--text-muted);
     letter-spacing: 0.02em;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* ---------- Language Switcher ---------- */
+.lang-switch {
+    display: flex;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.lang-btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-family: inherit;
+}
+
+.lang-btn:hover {
+    color: var(--text-primary);
+    background: rgba(74,125,255,0.08);
+}
+
+.lang-btn.active {
+    color: var(--accent-blue);
+    background: rgba(74,125,255,0.15);
 }
 
 /* ---------- Navigation Tabs ---------- */
@@ -99,6 +141,7 @@ body {
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
     padding-bottom: 2px;
+    flex-wrap: wrap;
 }
 
 .nav-tabs::-webkit-scrollbar {
@@ -106,8 +149,8 @@ body {
 }
 
 .nav-tab {
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.85rem;
     font-weight: 500;
     color: var(--text-secondary);
     background: transparent;
@@ -117,6 +160,7 @@ body {
     white-space: nowrap;
     transition: all var(--transition);
     font-family: inherit;
+    letter-spacing: 0.02em;
 }
 
 .nav-tab:hover {
@@ -134,21 +178,25 @@ body {
 .main-content {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 1.5rem;
+    padding: 0.75rem 1.25rem;
 }
 
 /* ---------- Tab Panels ---------- */
 .tab-panel {
     display: none;
-    animation: fadeIn 0.3s ease;
+    animation: fadeIn 0.2s ease;
 }
 
 .tab-panel.active {
     display: block;
 }
 
+/* Link budget — hidden */
+.nav-tab[data-tab="link-budget"] { display: none; }
+#tab-link-budget { display: none !important; }
+
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(4px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
@@ -156,7 +204,7 @@ body {
 .panel-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1.25rem;
+    gap: 0.75rem;
 }
 
 /* ---------- Card ---------- */
@@ -164,7 +212,7 @@ body {
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 1.5rem;
+    padding: 0.75rem 1rem;
     box-shadow: var(--shadow);
     transition: border-color var(--transition);
 }
@@ -176,18 +224,18 @@ body {
 .card-header {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1.25rem;
-    padding-bottom: 0.75rem;
+    gap: 0.4rem;
+    margin-bottom: 0.6rem;
+    padding-bottom: 0.4rem;
     border-bottom: 1px solid var(--border);
 }
 
 .card-icon {
-    font-size: 1.25rem;
+    font-size: 1rem;
 }
 
 .card-header h2 {
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: var(--text-primary);
     letter-spacing: -0.01em;
@@ -195,22 +243,22 @@ body {
 
 /* ---------- Form Elements ---------- */
 .form-group {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .form-group label {
     display: block;
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     font-weight: 500;
     color: var(--text-secondary);
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.2rem;
     letter-spacing: 0.01em;
 }
 
 input[type="number"] {
     width: 100%;
-    padding: 0.6rem 0.75rem;
-    font-size: 0.95rem;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.9rem;
     font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
     color: var(--text-primary);
     background: var(--bg-input);
@@ -222,7 +270,7 @@ input[type="number"] {
 
 input[type="number"]:focus {
     border-color: var(--border-focus);
-    box-shadow: 0 0 0 3px rgba(74,125,255,0.15);
+    box-shadow: 0 0 0 2px rgba(74,125,255,0.15);
 }
 
 input[type="number"]::-webkit-inner-spin-button,
@@ -230,11 +278,42 @@ input[type="number"]::-webkit-outer-spin-button {
     opacity: 0.5;
 }
 
+select {
+    width: 100%;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--text-primary);
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    outline: none;
+    transition: all var(--transition);
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238b8fa3' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.6rem center;
+    padding-right: 1.8rem;
+}
+
+select:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 2px rgba(74,125,255,0.15);
+}
+
+select option {
+    background: var(--bg-card);
+    color: var(--text-primary);
+}
+
 .hint {
     display: block;
-    font-size: 0.72rem;
+    font-size: 0.74rem;
     color: var(--text-muted);
-    margin-top: 0.25rem;
+    margin-top: 0.15rem;
     font-family: 'SF Mono', 'Fira Code', monospace;
 }
 
@@ -243,9 +322,26 @@ input[type="number"]::-webkit-outer-spin-button {
     background: var(--bg-result);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    padding: 0.75rem 1rem;
-    margin-bottom: 0.75rem;
+    padding: 0.4rem 0.75rem;
+    margin-bottom: 0.35rem;
     transition: all var(--transition);
+}
+
+/* Output that matches input field sizing */
+.result-out {
+    width: 100%;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.9rem;
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    color: var(--accent-green);
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+}
+.result-out .result-value {
+    font-size: inherit;
+    color: inherit;
+    font-weight: 600;
 }
 
 .result-box.highlight {
@@ -260,17 +356,17 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .result-label {
     display: block;
-    font-size: 0.72rem;
+    font-size: 0.74rem;
     font-weight: 500;
     color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.2rem;
+    text-transform: none;
+    letter-spacing: 0.03em;
+    margin-bottom: 0.1rem;
 }
 
 .result-value {
     display: block;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     font-weight: 700;
     font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
     color: var(--accent-green);
@@ -283,23 +379,138 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .result-sub {
     display: block;
-    font-size: 0.75rem;
+    font-size: 0.76rem;
     color: var(--text-secondary);
-    margin-top: 0.15rem;
+    margin-top: 0.1rem;
 }
 
-/* ---------- Formula Reference ---------- */
-.formula-ref {
+/* ---------- Formula & Reference Section ---------- */
+.formula-section {
+    margin-top: 0.75rem;
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    margin-top: 1.25rem;
     overflow: hidden;
 }
 
-.formula-ref summary {
-    padding: 0.85rem 1.25rem;
-    font-size: 0.85rem;
+.formula-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1rem;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+}
+
+.formula-header h3 {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.formula-header .icon {
+    font-size: 0.9rem;
+}
+
+.formula-body {
+    padding: 0.75rem 1rem;
+}
+
+/* ---------- Parameter Table ---------- */
+.param-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0.75rem;
+    font-size: 0.84rem;
+}
+
+.param-table th,
+.param-table td {
+    padding: 0.4rem 0.6rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.param-table th {
+    background: var(--bg-table);
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.param-table td {
+    color: var(--text-primary);
+}
+
+.param-table tr:last-child td {
+    border-bottom: none;
+}
+
+.param-table tr:hover td {
+    background: rgba(74,125,255,0.04);
+}
+
+.param-symbol {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--accent-cyan);
+    font-weight: 600;
+}
+
+.param-unit {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--accent-orange);
+    font-size: 0.72rem;
+}
+
+/* ---------- Formula Display ---------- */
+.formula-block {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.5rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.88rem;
+    color: var(--accent-green);
+    overflow-x: auto;
+}
+
+.formula-block .label {
+    display: block;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+    font-family: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.formula-note {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    background: rgba(74,125,255,0.06);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--accent-blue);
+}
+
+/* ---------- Details/Summary ---------- */
+details.formula-ref {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-top: 0.75rem;
+    overflow: hidden;
+}
+
+details.formula-ref summary {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
     font-weight: 600;
     color: var(--text-secondary);
     cursor: pointer;
@@ -308,21 +519,21 @@ input[type="number"]::-webkit-outer-spin-button {
     user-select: none;
 }
 
-.formula-ref summary:hover {
+details.formula-ref summary:hover {
     color: var(--text-primary);
 }
 
-.formula-ref[open] summary {
+details.formula-ref[open] summary {
     border-bottom: 1px solid var(--border);
 }
 
 .formula-content {
-    padding: 1rem 1.25rem;
+    padding: 0.75rem 1rem;
 }
 
 .formula-item {
-    padding: 0.5rem 0;
-    font-size: 0.85rem;
+    padding: 0.35rem 0;
+    font-size: 0.8rem;
     color: var(--text-secondary);
     border-bottom: 1px solid rgba(42,46,63,0.5);
 }
@@ -334,35 +545,45 @@ input[type="number"]::-webkit-outer-spin-button {
 .formula-item strong {
     color: var(--text-primary);
     font-family: 'SF Mono', 'Fira Code', monospace;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
 }
 
 .formula-item .note {
     color: var(--text-muted);
-    font-size: 0.75rem;
+    font-size: 0.7rem;
 }
 
 /* ---------- Divider ---------- */
 .divider {
     border: none;
     border-top: 1px solid var(--border);
-    margin: 1.25rem 0;
+    margin: 0.5rem 0;
+}
+
+/* ---------- TR Capacitor Results Grid ---------- */
+.tr-results-grid {
+    display: flex;
+    gap: 0.75rem;
+}
+.tr-results-grid > .tr-col {
+    flex: 1;
+    min-width: 0;
 }
 
 /* ---------- Footer ---------- */
 .footer {
     text-align: center;
-    padding: 2rem 1.5rem;
+    padding: 1rem 1.25rem;
     color: var(--text-muted);
     font-size: 0.78rem;
     border-top: 1px solid var(--border);
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 .footer-sub {
-    margin-top: 0.5rem;
+    margin-top: 0.3rem;
     color: var(--accent-orange);
-    font-size: 0.72rem;
+    font-size: 0.74rem;
 }
 
 /* ---------- Scrollbar ---------- */
@@ -386,56 +607,346 @@ input[type="number"]::-webkit-outer-spin-button {
 /* ---------- Responsive ---------- */
 @media (max-width: 768px) {
     html {
-        font-size: 14px;
+        font-size: 15px;
     }
 
     .header-content {
-        padding: 0.75rem 1rem;
+        padding: 0.4rem 0.6rem;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .header-right {
+        width: auto;
+        justify-content: flex-end;
+        gap: 0.4rem;
     }
 
     .logo h1 {
-        font-size: 1.2rem;
+        font-size: 1rem;
+    }
+
+    .logo .subtitle {
+        display: none;
+    }
+
+    .logo-icon {
+        font-size: 1.3rem;
     }
 
     .nav-tab {
-        padding: 0.4rem 0.75rem;
-        font-size: 0.75rem;
+        padding: 0.3rem 0.55rem;
+        font-size: 0.8rem;
     }
 
     .main-content {
-        padding: 1rem;
+        padding: 0.5rem 0.6rem;
     }
 
-    .panel-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-
+    /* Cards: 2-column grid for inputs and results */
     .card {
-        padding: 1.25rem;
+        padding: 0.6rem 0.7rem;
+    }
+
+    .card-header {
+        margin-bottom: 0.4rem;
+        padding-bottom: 0.3rem;
+    }
+
+    .card-header h2 {
+        font-size: 0.88rem;
+    }
+
+    /* 2-column form grid */
+    .card > .form-group {
+        display: inline-block;
+        width: calc(50% - 0.3rem);
+        margin-right: 0.3rem;
+        vertical-align: top;
+        margin-bottom: 0.4rem;
+    }
+
+    .card > .form-group:nth-child(2n) {
+        margin-right: 0;
+    }
+
+    .form-group label {
+        font-size: 0.72rem;
+        margin-bottom: 0.15rem;
+    }
+
+    .form-group .hint {
+        display: none;
+    }
+
+    /* Full-width elements (select, mode toggle) */
+    .card > .form-group:has(select),
+    #tr-mode-current,
+    #tr-mode-power {
+        display: block;
+        width: 100% !important;
+        margin-right: 0 !important;
+    }
+
+    /* result-out matches input sizing on mobile */
+    .result-out {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.85rem;
+    }
+
+    /* Divider: hide on mobile to not break inline flow */
+    .card > .divider {
+        display: none;
+    }
+
+    /* 2-column result grid */
+    .card > .result-box {
+        display: inline-block;
+        width: calc(50% - 0.2rem);
+        margin-right: 0.2rem;
+        vertical-align: top;
+        padding: 0.35rem 0.5rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .card > .result-box:nth-child(2n) {
+        margin-right: 0;
+    }
+
+    /* Full-width highlight boxes */
+    .result-box.highlight {
+        display: block;
+        width: 100% !important;
+        margin-right: 0 !important;
+    }
+
+    /* Full-width special boxes (orange border etc) */
+    .result-box[style*="border-left"] {
+        display: block;
+        width: 100% !important;
+        margin-right: 0 !important;
+    }
+
+    /* Main result cards row */
+    .panel-grid > .result-box {
+        display: inline-block;
+        width: calc(50% - 0.3rem);
+        margin-right: 0.3rem;
+        vertical-align: top;
+    }
+
+    .panel-grid > .result-box:nth-child(2n) {
+        margin-right: 0;
+    }
+
+    .result-label {
+        font-size: 0.68rem;
     }
 
     .result-value {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
+    }
+
+    .result-value[style*="font-size:1.5em"] {
+        font-size: 1.2em !important;
+    }
+
+    .result-value[style*="font-size:1.3em"] {
+        font-size: 1.1em !important;
+    }
+
+    /* Table */
+    .param-table {
+        font-size: 0.75rem;
+    }
+
+    .param-table th,
+    .param-table td {
+        padding: 0.3rem 0.4rem;
+    }
+
+    /* Formula section */
+    .formula-section {
+        margin-top: 0.5rem;
+    }
+
+    .formula-header {
+        padding: 0.5rem 0.7rem;
+    }
+
+    .formula-body {
+        padding: 0.6rem 0.7rem;
+    }
+
+    .formula-block {
+        padding: 0.4rem 0.6rem;
+        margin-bottom: 0.4rem;
+        font-size: 0.82rem;
+    }
+
+    .formula-block .label {
+        font-size: 0.68rem;
+        margin-bottom: 0.15rem;
+    }
+
+    .formula-note {
+        padding: 0.35rem 0.6rem;
+        font-size: 0.72rem;
+        margin-top: 0.3rem;
+    }
+
+    /* Divider */
+    .divider {
+        margin: 0.4rem 0;
+    }
+
+    /* Footer */
+    .footer {
+        padding: 0.75rem;
+        margin-top: 0.5rem;
+    }
+
+    /* Phased array: force Tx/Rx details side-by-side on mobile */
+    #tab-phased-array .details-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+    /* Phased array details: result boxes fill full card width */
+    #tab-phased-array .details-grid .result-box {
+        display: block;
+        width: 100% !important;
+        margin-right: 0 !important;
+    }
+
+    /* Unit conversion: 4 cards in 2×2 grid on mobile */
+    #tab-unit-conv .panel-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        align-items: stretch;
+    }
+    #tab-unit-conv .card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    /* Unit conversion: form-groups full-width within narrow cards */
+    #tab-unit-conv .card > .form-group {
+        display: block;
+        width: 100% !important;
+        margin-right: 0 !important;
+    }
+    /* Unit conversion: dividers hidden on mobile */
+    #tab-unit-conv .card > .divider {
+        display: none;
+    }
+
+    /* TR capacitor: results split into 2 columns by function */
+    #tab-pulse-cap .tr-results-grid {
+        display: flex;
+        gap: 0.5rem;
+    }
+    #tab-pulse-cap .tr-results-grid > .tr-col {
+        flex: 1;
+        min-width: 0;
+    }
+    #tab-pulse-cap .tr-results-grid .result-box {
+        display: block;
+        width: 100% !important;
+        margin-right: 0 !important;
+    }
+    #tab-pulse-cap .tr-results-grid .result-box.highlight {
+        display: block;
+        width: 100% !important;
+    }
+
+    /* FSPL & Tline: override highlight full-width → equal 2-column */
+    #tab-fspl .card > .result-box.highlight,
+    #tab-tline .card > .result-box.highlight {
+        display: inline-block !important;
+        width: calc(50% - 0.2rem) !important;
+        margin-right: 0.2rem !important;
+    }
+    #tab-fspl .card > .result-box.highlight:nth-child(2n),
+    #tab-tline .card > .result-box.highlight:nth-child(2n) {
+        margin-right: 0 !important;
+    }
+
+    /* Tline results: hide formula-blocks & divider for clean 2-col grid */
+    #tab-tline .card .formula-block,
+    #tab-tline .card .divider {
+        display: none !important;
+    }
+
+    /* Tline geometry inputs: 2-column layout */
+    #tl-inputs .form-group {
+        display: inline-block;
+        width: calc(50% - 0.3rem);
+        margin-right: 0.3rem;
+        vertical-align: top;
+        margin-bottom: 0.4rem;
+    }
+    #tl-inputs .form-group:nth-child(2n) {
+        margin-right: 0;
+    }
+    #tl-inputs .form-group:has(select) {
+        display: block;
+        width: 100% !important;
+        margin-right: 0 !important;
     }
 }
 
 @media (max-width: 480px) {
+    html {
+        font-size: 14px;
+    }
+
     .header-content {
-        padding: 0.5rem 0.75rem;
+        padding: 0.35rem 0.5rem;
     }
 
     .nav-tab {
-        padding: 0.35rem 0.6rem;
-        font-size: 0.7rem;
+        padding: 0.25rem 0.45rem;
+        font-size: 0.75rem;
     }
 
     .main-content {
-        padding: 0.75rem;
+        padding: 0.35rem 0.5rem;
     }
 
     .card {
-        padding: 1rem;
+        padding: 0.5rem 0.6rem;
+    }
+}
+
+/* ---------- Mobile Touch Optimizations ---------- */
+@media (hover: none) and (pointer: coarse) {
+    /* Touch devices: larger tap targets */
+    input[type="number"],
+    select {
+        padding: 0.55rem 0.6rem;
+        font-size: 16px;
+    }
+
+    .nav-tab {
+        padding: 0.45rem 0.75rem;
+    }
+
+    .result-box {
+        padding: 0.5rem 0.75rem;
+    }
+}
+
+/* ---------- Safe Area (notch) ---------- */
+@supports (padding-top: env(safe-area-inset-top)) {
+    .header {
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .main-content {
+        padding-left: calc(1.25rem + env(safe-area-inset-left));
+        padding-right: calc(1.25rem + env(safe-area-inset-right));
+        padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
     }
 }
 
@@ -458,4 +969,13 @@ input[type="number"]::-webkit-outer-spin-button {
         break-inside: avoid;
         border: 1px solid #ddd;
     }
+}
+/* ---------- Formula Live Values ---------- */
+.formula-live {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--accent-cyan);
+    margin-top: 0.25rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    opacity: 0.9;
 }

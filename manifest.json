@@ -1,0 +1,21 @@
+{
+    "name": "射频计算器 | RF Calculator",
+    "short_name": "RF计算器",
+    "description": "专业射频链路预算计算器 - FSPL、EIRP、雷达距离、相控阵、储能电容、单位转换",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0f1117",
+    "theme_color": "#0f1117",
+    "orientation": "any",
+    "icons": [
+        {
+            "src": "/icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": ["utilities", "education"],
+    "lang": "zh-CN",
+    "dir": "ltr"
+}
