@@ -640,6 +640,17 @@ details.formula-ref[open] summary {
         font-size: 0.8rem;
     }
 
+    .nav-tabs {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.15rem;
+        align-items: center;
+    }
+
+    .header-right {
+        align-items: center;
+    }
+
     .main-content {
         padding: 0.5rem 0.6rem;
     }
@@ -860,39 +871,43 @@ details.formula-ref[open] summary {
         width: 100% !important;
     }
 
-    /* FSPL & Tline: override highlight full-width → equal 2-column */
-    #tab-fspl .card > .result-box.highlight,
-    #tab-tline .card > .result-box.highlight {
-        display: inline-block !important;
-        width: calc(50% - 0.2rem) !important;
-        margin-right: 0.2rem !important;
+    /* FSPL & Tline results: flex 2-column equal-width layout */
+    #tab-fspl .card:last-child,
+    #tab-tline .panel-grid:last-child > .card:first-child {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
     }
-    #tab-fspl .card > .result-box.highlight:nth-child(2n),
-    #tab-tline .card > .result-box.highlight:nth-child(2n) {
+    #tab-fspl .card:last-child > .card-header,
+    #tab-tline .panel-grid:last-child > .card:first-child > .card-header {
+        flex: 0 0 100%;
+    }
+    #tab-fspl .card:last-child > .result-box,
+    #tab-tline .panel-grid:last-child > .card:first-child > .result-box {
+        flex: 1 1 calc(50% - 0.15rem);
+        min-width: 0;
         margin-right: 0 !important;
+        width: auto !important;
+        display: block !important;
     }
 
-    /* Tline results: hide formula-blocks & divider for clean 2-col grid */
-    #tab-tline .card .formula-block,
-    #tab-tline .card .divider {
+    /* Tline results: hide formula-blocks & divider for clean grid */
+    #tab-tline .panel-grid:last-child > .card:first-child > .formula-block,
+    #tab-tline .panel-grid:last-child > .card:first-child > .divider {
         display: none !important;
     }
 
     /* Tline geometry inputs: 2-column layout */
-    #tl-inputs .form-group {
-        display: inline-block;
-        width: calc(50% - 0.3rem);
-        margin-right: 0.3rem;
-        vertical-align: top;
-        margin-bottom: 0.4rem;
+    #tl-inputs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
     }
-    #tl-inputs .form-group:nth-child(2n) {
-        margin-right: 0;
+    #tl-inputs .form-group {
+        flex: 0 0 calc(50% - 0.15rem);
     }
     #tl-inputs .form-group:has(select) {
-        display: block;
-        width: 100% !important;
-        margin-right: 0 !important;
+        flex: 0 0 100%;
     }
 }
 
@@ -979,3 +994,4 @@ details.formula-ref[open] summary {
     font-family: 'SF Mono', 'Fira Code', monospace;
     opacity: 0.9;
 }
+/* deploy 1780123711 */

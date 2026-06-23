@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Capacitor generated
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/capacitor-cordova-android-plugins/
+
+# Build outputs
+android/app/build/
+android/.gradle/
+android/build/
+android/capacitor-android/build/
+android/capacitor-cordova-android-plugins/build/
+
+# Local properties
+android/local.properties
+
+# IDE
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Wrangler cache
+.wrangler/
+www/
